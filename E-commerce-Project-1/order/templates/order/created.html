@@ -1,0 +1,18 @@
+{% extends "shop/base/base.html" %}
+{% block title %}
+Thank you
+{% endblock %}
+{% block content %}
+<div class="container text-center mt-5 mb-5">
+    <h1>Thank you</h1>
+    <h3>Your order has been successfully completed. Your order number is
+    <strong>{{ order.id }}</strong>.</h3>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // Fire Snowplow Struct Event when Thank You page loads
+    window.snowplow('trackStructEvent', 'order', 'completed', 'order_{{ order.id }}', null);
+</script>
+{% endblock %}

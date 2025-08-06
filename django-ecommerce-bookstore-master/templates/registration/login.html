@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Log In{% endblock title %}
+
+{% block content %}
+<h3>Log In</h3>
+
+<form method="post" id="login-form">
+    {% csrf_token %}
+    {{ form.as_p }}
+    
+    <button type="submit" class="btn btn-success" id="login-btn">Log In</button>
+    <a class="btn btn-outline-info" href="{% url 'signup' %}" role="button" id="signup-link">Create Account</a>    
+</form>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Track form submission
+    document.getElementById("login-form").addEventListener("submit", function () {
+      snowplow('trackStructEvent', 'Bookshop', 'submit', 'login-form', 'login-attempt');
+    });
+
+    // Track login button click
+    document.getElementById("login-btn").addEventListener("click", function () {
+      snowplow('trackStructEvent', 'Bookshop', 'click', 'login-button', 'attempt-login');
+    });
+
+    // Track signup link click
+    document.getElementById("signup-link").addEventListener("click", function () {
+      snowplow('trackStructEvent', 'Bookshop', 'click', 'signup-link', 'go-to-signup');
+    });
+
+    // Track focus on input fields
+    const inputs = document.querySelectorAll("#login-form input");
+    inputs.forEach(input => {
+      input.addEventListener("focus", function () {
+        snowplow('trackStructEvent', 'Bookshop', 'focus', input.name, 'login-field-focus');
+      });
+    });
+
+    // Add custom context for login page
+    snowplow('trackSelfDescribingEvent', {
+      schema: 'iglu:com.bookshop/login_page/jsonschema/1-0-0',
+      data: {
+        page: 'login',
+        timestamp: new Date().toISOString()
+      }
+    });
+  });
+</script>
+{% endblock content %}

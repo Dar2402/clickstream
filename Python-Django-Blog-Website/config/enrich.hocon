@@ -1,0 +1,114 @@
+{
+  "input": {
+    "type": "Kafka",
+    "topicName": "good",
+    "bootstrapServers": "kafka:9092",
+    "consumerConf": {
+      "enable.auto.commit": "true",
+      "auto.commit.interval.ms": "1000",
+      "auto.offset.reset": "latest",
+      "group.id": "snowplow-enrich-consumer",
+      "session.timeout.ms": "30000",
+      "heartbeat.interval.ms": "3000",
+      "max.poll.records": "500",
+      "fetch.min.bytes": "1",
+      "fetch.max.wait.ms": "500",
+      "request.timeout.ms": "40000",
+      "retry.backoff.ms": "100"
+    }
+  },
+
+  "output": {
+    "good": {
+      "type": "Kafka",
+      "topicName": "enriched",
+      "bootstrapServers": "kafka:9092",
+      "producerConf": {
+        "retries": "3",
+        "batch.size": "16384",
+        "linger.ms": "5",
+        "buffer.memory": "33554432",
+        "acks": "all",
+        "compression.type": "snappy",
+        "max.in.flight.requests.per.connection": "1",
+        "request.timeout.ms": "30000",
+        "delivery.timeout.ms": "120000"
+      }
+    },
+
+    "bad": {
+      "type": "Kafka",
+      "topicName": "bad_enrich",
+      "bootstrapServers": "kafka:9092",
+      "producerConf": {
+        "retries": "3",
+        "batch.size": "16384",
+        "linger.ms": "5",
+        "buffer.memory": "33554432",
+        "acks": "all",
+        "compression.type": "snappy",
+        "max.in.flight.requests.per.connection": "1",
+        "request.timeout.ms": "30000",
+        "delivery.timeout.ms": "120000"
+      }
+    },
+
+    "pii": {
+      "type": "Kafka",
+      "topicName": "pii",
+      "bootstrapServers": "kafka:9092",
+      "producerConf": {
+        "retries": "3",
+        "batch.size": "16384",
+        "linger.ms": "5",
+        "buffer.memory": "33554432",
+        "acks": "all",
+        "compression.type": "snappy",
+        "max.in.flight.requests.per.connection": "1",
+        "request.timeout.ms": "30000",
+        "delivery.timeout.ms": "120000"
+      }
+    }
+  },
+
+  "monitoring": {
+    "metrics": {
+      "statsd": {
+        "enabled": false,
+        "hostname": "localhost",
+        "port": 8125,
+        "tags": {},
+        "period": "10000",
+        "prefix": "snowplow.enrich"
+      },
+      "stdout": {
+        "enabled": false,
+        "period": "10000",
+        "prefix": "snowplow.enrich"
+      }
+    },
+    "webhook": {
+      "endpoint": "",
+      "tags": {}
+    },
+    "sentry": {
+      "enabled": false,
+      "dsn": ""
+    }
+  },
+
+  "telemetry": {
+    "disable": true,
+    "interval": "300000",
+    "method": "POST",
+    "collectorUri": "sp.snowcatcloud.com",
+    "collectorPort": 443,
+    "secure": true
+  },
+
+  "featureFlags": {
+    "acceptInvalid": false,
+    "legacyEnrichmentOrder": false,
+    "tryBase64Decoding": false
+  }
+}

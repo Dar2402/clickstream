@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Search{% endblock title %}
+
+{% block content %}
+
+    <h3 class = "text-secondary">Search Results</h3><hr>
+
+    {% for every in object_list %}
+        <div>
+            <h3><a href="{% url 'detail' every.pk %}">{{ every.title }}</a></h3>
+            <p>Author: {{ every.author }}</p>
+        </div>
+    {% empty %}
+    <h5 class="text-danger">Nothing found :(</h5>
+    {% endfor %}
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            if(typeof snowplow === 'function'){
+                snowplow('trackSelfDescribingEvent', {
+                    schema: 'iglu:com.nixagone/search_performed/jsonschema/1-0-0',
+                    data: {
+                        search_term: '{{ request.GET.q|default:""|escapejs }}',
+                        user: "{{ user.username|default:'anonymous'|escapejs }}",
+                        result_count: {{ object_list.count|default:0 }}
+                    }
+                });
+            }
+        });
+    </script>
+{% endblock content %}

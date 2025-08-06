@@ -1,0 +1,25 @@
+{
+  "schema": "iglu:com.snowplowanalytics.snowplow/enrichments/jsonschema/1-0-0",
+  "data": [
+    {
+      "schema": "iglu:com.snowplowanalytics.snowplow/anon_ip/jsonschema/1-0-0",
+      "data": {
+        "enabled": true,
+        "vendor": "com.snowplowanalytics.snowplow",
+        "name": "anon_ip",
+        "parameters": {
+          "anonOctets": 1
+        }
+      }
+    },
+    {
+      "schema": "iglu:com.snowplowanalytics.snowplow/ua_parser_config/jsonschema/1-0-0",
+      "data": {
+        "enabled": true,
+        "vendor": "com.snowplowanalytics.snowplow",
+        "name": "ua_parser_config",
+        "parameters": {}
+      }
+    }
+  ]
+}

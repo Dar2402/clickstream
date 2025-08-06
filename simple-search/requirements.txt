@@ -1,0 +1,7 @@
+flask
+whoosh
+gunicorn
+sqlalchemy
+jinja2
+django-cors-headers
+snowplow_tracker

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Search Users</h1>
+<form method="post" action="/">
+    <div class="mb-3">
+        <input type="text" class="form-control" name="query" placeholder="Search..." value="{{ query }}">
+    </div>
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
+{% if results %}
+<h3 class="mt-4">Results:</h3>
+<ul class="list-group">
+    {% for result in results %}
+    <li class="list-group-item">
+        <strong>{{ result['title'] }}</strong><br>
+        {{ result['content'] }}<br>
+        <a href="http://localhost:6000/users/{{ result['user_id'] }}" target="_blank">View Profile</a>
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+<hr>
+<h2 class="mt-5">Add New User</h2>
+<form method="post" action="/add_user">
+    <div class="mb-3">
+        <input type="text" class="form-control" name="name" placeholder="Name" required>
+    </div>
+    <div class="mb-3">
+        <textarea class="form-control" name="bio" placeholder="Bio" required></textarea>
+    </div>
+    <button type="submit" class="btn btn-success">Add User</button>
+</form>
+{% endblock %}

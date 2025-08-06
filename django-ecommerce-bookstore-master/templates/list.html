@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<hr>
+
+
+<div class="row">
+    {% for each in object_list %}
+    <div class="col">
+        <div class="card" style="width: 13rem;">
+            <img src="{{ each.image_url }}" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">{{ each.title|slice:":25"}} ...</h5>
+                <p class="card-text">${{ each.price|floatformat:2 }}</p>                
+                {% if each.book_available is True %}
+                <li class="text-primary">Available</li>
+                {% else %}
+                <li class="text-danger">Out of Stock !</li>
+                {% endif %}<br>
+                <a href="{% url 'detail' each.id %}" class="btn btn-primary">View</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        if(typeof snowplow === 'function'){
+            snowplow('trackSelfDescribingEvent', {
+                schema: 'iglu:com.nixagone/product_list_displayed/jsonschema/1-0-0',
+                data: {
+                    product_count: {{ object_list.count }},
+                    products: [
+                        {% for each in object_list %}
+                        {
+                            product_id: "{{ each.id }}",
+                            title: "{{ each.title|slice:":25"|escapejs }}",
+                            price: "{{ each.price|floatformat:2 }}",
+                            book_available: "{{ each.book_available|yesno:'true,false' }}"
+                        },
+                        {% endfor %}
+                    ]
+                }
+            });
+        }
+    });
+</script>
+
+{% endblock content %}

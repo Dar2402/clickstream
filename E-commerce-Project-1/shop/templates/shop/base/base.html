@@ -1,0 +1,98 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>{% block title %}Django E-commerce{% endblock %}</title>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+
+    <!-- CSS Files -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Mukta:300,400,700"
+    />
+    <link rel="stylesheet" href="{% static 'fonts/icomoon/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/magnific-popup.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}" />
+    <link
+      rel="stylesheet"
+      href="{% static 'css/owl.theme.default.min.css' %}"
+    />
+    <link rel="stylesheet" href="{% static 'css/aos.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+
+    <!-- Load Snowplow sp.js from static -->
+    <script src="{% static 'sp.js' %}"></script>
+  </head>
+
+  <body>
+    <div class="site-wrap">
+      {% include 'shop/base/navbar.html' %} {% block content %} {% endblock %}
+      {% include 'shop/base/footer.html' %}
+    </div>
+
+    <!-- JS Files -->
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/jquery-ui.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'js/jquery.magnific-popup.min.js' %}"></script>
+    <script src="{% static 'js/aos.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+
+    <!-- Snowplow Tracker Init -->
+    <script type="text/javascript">
+      (function (p, l, o, w, i, n, g) {
+        if (!p[i]) {
+          p.GlobalSnowplowNamespace = p.GlobalSnowplowNamespace || [];
+          p.GlobalSnowplowNamespace.push(i);
+          p[i] = function () {
+            (p[i].q = p[i].q || []).push(arguments);
+          };
+          p[i].q = p[i].q || [];
+          n = l.createElement(o);
+          g = l.getElementsByTagName(o)[0];
+          n.async = 1;
+          n.src = w;
+          g.parentNode.insertBefore(n, g);
+        }
+      })(window, document, "script", "/static/sp.js", "snowplow");
+
+      window.snowplow("newTracker", "sp", ``, {
+        appId: "django-web-app",
+        platform: "web",
+        cookieDomain: null,
+      });
+
+      window.snowplow("trackPageView");
+      window.snowplow("enableLinkClickTracking");
+      window.snowplow("enableFormTracking");
+    </script>
+
+    <script>
+      // Custom Tracking Functions (like Header Clicks)
+      function trackHeaderClick(location) {
+        window.snowplow(
+          "trackStructEvent",
+          "navigation",
+          "click",
+          location,
+          null
+        );
+      }
+    </script>
+
+    <script>
+        function trackCTAEvent(category, action, label) {
+        window.snowplow('trackStructEvent', category, action, label, null);
+        }
+    </script>
+    {% block extra_scripts %}{% endblock %}
+  </body>
+</html>

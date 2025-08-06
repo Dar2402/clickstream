@@ -1,0 +1,1086 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Contact Us - BlogSpot{% endblock %}
+{% block page_type %}contact{% endblock %}
+
+{% block extra_css %}
+<!-- Contact page specific styles with enhanced interactions -->
+<style>
+  .contact-banner {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 100px 0;
+    margin-bottom: 50px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .contact-banner::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+    background-size: 50px 50px;
+    animation: float 20s infinite linear;
+  }
+
+  @keyframes float {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+  }
+
+  .contact-info-item {
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .contact-info-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+  }
+
+  .contact-info-item:hover::before {
+    left: 100%;
+  }
+
+  .contact-info-item:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+  }
+
+  .main-button {
+    background: #667eea;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 25px;
+    color: white;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .main-button::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255,255,255,0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s, height 0.3s;
+  }
+
+  .main-button:hover::before {
+    width: 300px;
+    height: 300px;
+  }
+
+  .main-button:hover {
+    background: #764ba2;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+  }
+
+  .form-control {
+    border-radius: 10px;
+    border: 2px solid #e9ecef;
+    padding: 12px 15px;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .form-control:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    transform: translateY(-2px);
+  }
+
+  .form-floating {
+    position: relative;
+  }
+
+  .char-counter {
+    font-size: 0.8rem;
+    color: #6c757d;
+    text-align: right;
+    margin-top: 5px;
+  }
+
+  .social-link {
+    transition: all 0.3s ease;
+    display: inline-block;
+    padding: 10px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+  }
+
+  .social-link:hover {
+    background: rgba(255,255,255,0.2);
+    transform: translateY(-3px) scale(1.1);
+  }
+
+  .map-container {
+    position: relative;
+    transition: all 0.3s ease;
+  }
+
+  .map-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+  }
+
+  .pulse-animation {
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.7; }
+    100% { opacity: 1; }
+  }
+
+  .typing-indicator {
+    display: none;
+    color: #667eea;
+    font-size: 0.9rem;
+    margin-top: 5px;
+  }
+
+  .form-progress {
+    height: 4px;
+    background: #e9ecef;
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+
+  .form-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    width: 0%;
+    transition: width 0.3s ease;
+  }
+
+  .tooltip-custom {
+    position: relative;
+    cursor: help;
+  }
+
+  .tooltip-custom::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    z-index: 1000;
+  }
+
+  .tooltip-custom:hover::after {
+    opacity: 1;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Contact Banner -->
+<div class="contact-banner"
+     data-sp-track="contact-banner"
+     data-sp-label="Contact Banner"
+     data-sp-banner-type="hero">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 text-center">
+        <div class="banner-content" data-sp-track="banner-content">
+          <h4 data-sp-track="banner-subtitle"
+              data-sp-label="Contact Us"
+              data-sp-text-content="Contact Us">Contact Us</h4>
+          <h2 data-sp-track="banner-title"
+              data-sp-label="Let's Stay In Touch"
+              data-sp-text-content="Let's Stay In Touch!">Let's Stay In Touch!</h2>
+          <div class="mt-4">
+            <button class="btn btn-outline-light"
+                    onclick="scrollToForm()"
+                    data-sp-track="banner-cta"
+                    data-sp-label="Get In Touch Button"
+                    data-sp-action="scroll-to-form">
+              <i class="fas fa-arrow-down me-2"></i>Get In Touch
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% if message %}
+<div class="container">
+  <div class="alert alert-info alert-dismissible fade show"
+       data-sp-track="server-message"
+       data-sp-message-type="info">
+    <i class="fas fa-info-circle me-2"></i>{{ message }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+</div>
+{% endif %}
+
+<!-- Contact Section -->
+<section class="contact-us py-5"
+         data-sp-track="contact-section"
+         data-sp-section-type="main-content">
+  <div class="container">
+    <!-- Form Progress Indicator -->
+    <div class="form-progress" data-sp-track="form-progress">
+      <div class="form-progress-bar" id="formProgressBar"></div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="contact-wrapper">
+          <div class="row">
+            <!-- Contact Form -->
+            <div class="col-lg-8 mb-4" data-sp-track="contact-form-section">
+              <div class="contact-form-container p-4 bg-light rounded shadow-sm"
+                   data-sp-track="form-container">
+                <div class="section-heading mb-4" data-sp-track="form-heading">
+                  <h2 class="h3 text-primary"
+                      data-sp-track="form-title"
+                      data-sp-label="Send us a message">Send us a message</h2>
+                  <p class="text-muted mb-0">We'd love to hear from you. Send us a message and we'll respond as soon as possible.</p>
+                </div>
+
+                <form id="contact"
+                      method="post"
+                      action="{% url 'contact' %}"
+                      data-sp-track="contact-form"
+                      data-sp-form-type="contact"
+                      data-sp-label="Contact Form"
+                      novalidate>
+                  {% csrf_token %}
+
+                  <div class="row">
+                    <!-- Name Field -->
+                    <div class="col-md-6 mb-3">
+                      <div class="form-floating">
+                        <input name="name"
+                               type="text"
+                               id="name"
+                               class="form-control"
+                               placeholder="Your full name"
+                               required
+                               data-sp-track="form-input"
+                               data-sp-input-type="name"
+                               data-sp-label="Name Field"
+                               data-sp-required="true"
+                               data-sp-field-order="1">
+                        <label for="name"
+                               data-sp-track="form-label"
+                               data-sp-field="name">Name *</label>
+                      </div>
+                      <div class="invalid-feedback" data-sp-track="validation-message"></div>
+                    </div>
+
+                    <!-- Email Field -->
+                    <div class="col-md-6 mb-3">
+                      <div class="form-floating">
+                        <input name="email"
+                               type="email"
+                               id="email"
+                               class="form-control"
+                               placeholder="your.email@example.com"
+                               required
+                               data-sp-track="form-input"
+                               data-sp-input-type="email"
+                               data-sp-label="Email Field"
+                               data-sp-required="true"
+                               data-sp-field-order="2">
+                        <label for="email"
+                               data-sp-track="form-label"
+                               data-sp-field="email">Email *</label>
+                      </div>
+                      <div class="invalid-feedback" data-sp-track="validation-message"></div>
+                    </div>
+
+                    <!-- Subject Field -->
+                    <div class="col-12 mb-3">
+                      <div class="form-floating">
+                        <select name="subject"
+                                id="subject"
+                                class="form-control"
+                                data-sp-track="form-input"
+                                data-sp-input-type="subject"
+                                data-sp-label="Subject Field"
+                                data-sp-field-order="3">
+                          <option value="" data-sp-track="option" data-sp-option-value="">Select a topic</option>
+                          <option value="general" data-sp-track="option" data-sp-option-value="general">General Inquiry</option>
+                          <option value="support" data-sp-track="option" data-sp-option-value="support">Technical Support</option>
+                          <option value="business" data-sp-track="option" data-sp-option-value="business">Business Partnership</option>
+                          <option value="feedback" data-sp-track="option" data-sp-option-value="feedback">Feedback</option>
+                          <option value="other" data-sp-track="option" data-sp-option-value="other">Other</option>
+                        </select>
+                        <label for="subject"
+                               data-sp-track="form-label"
+                               data-sp-field="subject">Subject</label>
+                      </div>
+                    </div>
+
+                    <!-- Message Field -->
+                    <div class="col-12 mb-3">
+                      <div class="form-floating">
+                        <textarea name="message"
+                                  rows="6"
+                                  id="message"
+                                  class="form-control"
+                                  placeholder="Tell us what you're thinking..."
+                                  required
+                                  maxlength="1000"
+                                  data-sp-track="form-input"
+                                  data-sp-input-type="message"
+                                  data-sp-label="Message Field"
+                                  data-sp-required="true"
+                                  data-sp-field-order="4"
+                                  style="min-height: 120px;"></textarea>
+                        <label for="message"
+                               data-sp-track="form-label"
+                               data-sp-field="message">Message *</label>
+                      </div>
+                      <div class="char-counter"
+                           id="charCounter"
+                           data-sp-track="char-counter">0 / 1000 characters</div>
+                      <div class="typing-indicator"
+                           id="typingIndicator"
+                           data-sp-track="typing-indicator">
+                        <i class="fas fa-edit pulse-animation"></i> Writing...
+                      </div>
+                      <div class="invalid-feedback" data-sp-track="validation-message"></div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="col-12 text-center">
+                      <button type="submit"
+                              id="form-submit"
+                              class="main-button btn btn-lg"
+                              data-sp-track="form-submit"
+                              data-sp-label="Send Message"
+                              data-sp-form-type="contact"
+                              data-sp-button-type="submit"
+                              data-sp-button-state="enabled">
+                        <span class="button-text">
+                          <i class="fas fa-paper-plane me-2"></i>Send Message
+                        </span>
+                        <span class="button-loading d-none">
+                          <i class="fas fa-spinner fa-spin me-2"></i>Sending...
+                        </span>
+                      </button>
+
+                      <!-- Alternative contact methods -->
+                      <div class="mt-3">
+                        <small class="text-muted">
+                          Or reach us directly at
+                          <a href="mailto:blogspot@gmail.com"
+                             class="text-primary text-decoration-none"
+                             data-sp-track="quick-email-link"
+                             data-sp-label="Quick Email Link">blogspot@gmail.com</a>
+                        </small>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+
+                <!-- Form Messages -->
+                {% for message in messages %}
+                <div class="alert alert-danger mt-3"
+                     data-sp-track="form-message"
+                     data-sp-message-type="error"
+                     data-sp-label="Form Error Message">
+                  <i class="fas fa-exclamation-triangle me-2"></i>{{message}}
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="col-lg-4" data-sp-track="contact-info-section">
+              <div class="contact-info-container p-4 bg-primary text-white rounded shadow-sm h-100">
+                <div class="section-heading mb-4" data-sp-track="contact-info-heading">
+                  <h2 class="h3 text-white">Contact Information</h2>
+                  <p class="mb-0">Get in touch with us through any of these channels</p>
+                </div>
+
+                <div class="contact-info-list">
+                  <!-- Phone -->
+                  <div class="contact-info-item mb-4 p-3 rounded"
+                       data-sp-track="contact-info-item"
+                       data-sp-info-type="phone"
+                       data-sp-clickable="true"
+                       style="background: rgba(255,255,255,0.1);"
+                       data-tooltip="Click to call">
+                    <div class="d-flex align-items-center">
+                      <div class="icon-wrapper me-3">
+                        <i class="fas fa-phone-alt fa-lg"
+                           data-sp-track="contact-icon"
+                           data-sp-icon-type="phone"></i>
+                      </div>
+                      <div>
+                        <h5 class="mb-1"
+                            data-sp-track="contact-info-value"
+                            data-sp-label="Phone Number"
+                            data-sp-value="+91 8976567898">
+                          <a href="tel:+918976567898"
+                             class="text-white text-decoration-none"
+                             data-sp-track="phone-link"
+                             data-sp-label="Phone Call Link">+91 8976567898</a>
+                        </h5>
+                        <small class="text-light">PHONE NUMBER</small>
+                        <div class="mt-1">
+                          <small class="text-light">
+                            <i class="fas fa-clock me-1"></i>Mon-Fri, 9AM-6PM IST
+                          </small>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Email -->
+                  <div class="contact-info-item mb-4 p-3 rounded"
+                       data-sp-track="contact-info-item"
+                       data-sp-info-type="email"
+                       data-sp-clickable="true"
+                       style="background: rgba(255,255,255,0.1);"
+                       data-tooltip="Click to email">
+                    <div class="d-flex align-items-center">
+                      <div class="icon-wrapper me-3">
+                        <i class="fas fa-envelope fa-lg"
+                           data-sp-track="contact-icon"
+                           data-sp-icon-type="email"></i>
+                      </div>
+                      <div>
+                        <h5 class="mb-1"
+                            data-sp-track="contact-info-value"
+                            data-sp-label="Email Address"
+                            data-sp-value="blogspot@gmail.com">
+                          <a href="mailto:blogspot@gmail.com"
+                             class="text-white text-decoration-none"
+                             data-sp-track="email-link"
+                             data-sp-label="Email Link">blogspot@gmail.com</a>
+                        </h5>
+                        <small class="text-light">EMAIL ADDRESS</small>
+                        <div class="mt-1">
+                          <small class="text-light">
+                            <i class="fas fa-reply me-1"></i>We reply within 24 hours
+                          </small>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Address -->
+                  <div class="contact-info-item mb-4 p-3 rounded"
+                       data-sp-track="contact-info-item"
+                       data-sp-info-type="address"
+                       data-sp-clickable="true"
+                       style="background: rgba(255,255,255,0.1);"
+                       data-tooltip="Click to view on map">
+                    <div class="d-flex align-items-start">
+                      <div class="icon-wrapper me-3 mt-1">
+                        <i class="fas fa-map-marker-alt fa-lg"
+                           data-sp-track="contact-icon"
+                           data-sp-icon-type="address"></i>
+                      </div>
+                      <div>
+                        <h5 class="mb-1"
+                            data-sp-track="contact-info-value"
+                            data-sp-label="Street Address">
+                          123 Rajaji Nagar,<br>
+                          Bangalore, Karnataka 560032
+                        </h5>
+                        <small class="text-light">STREET ADDRESS</small>
+                        <div class="mt-1">
+                          <button class="btn btn-sm btn-outline-light"
+                                  onclick="scrollToMap()"
+                                  data-sp-track="view-map-btn"
+                                  data-sp-label="View on Map">
+                            <i class="fas fa-map me-1"></i>View on Map
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Business Hours -->
+                  <div class="contact-info-item mb-4 p-3 rounded"
+                       data-sp-track="contact-info-item"
+                       data-sp-info-type="hours"
+                       style="background: rgba(255,255,255,0.1);">
+                    <div class="d-flex align-items-center">
+                      <div class="icon-wrapper me-3">
+                        <i class="fas fa-clock fa-lg"
+                           data-sp-track="contact-icon"
+                           data-sp-icon-type="hours"></i>
+                      </div>
+                      <div>
+                        <h5 class="mb-1">Business Hours</h5>
+                        <small class="text-light">
+                          Mon-Fri: 9:00 AM - 6:00 PM<br>
+                          Sat: 10:00 AM - 4:00 PM<br>
+                          Sun: Closed
+                        </small>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Social Links -->
+                  <div class="social-links mt-4" data-sp-track="social-links-section">
+                    <h6 class="text-white mb-3">Follow Us</h6>
+                    <div class="d-flex gap-3">
+                      <a href="#"
+                         class="social-link text-white text-decoration-none"
+                         data-sp-track="social-link"
+                         data-sp-platform="facebook"
+                         data-sp-label="Facebook Link"
+                         data-tooltip="Follow us on Facebook">
+                        <i class="fab fa-facebook-f fa-lg"></i>
+                      </a>
+                      <a href="#"
+                         class="social-link text-white text-decoration-none"
+                         data-sp-track="social-link"
+                         data-sp-platform="twitter"
+                         data-sp-label="Twitter Link"
+                         data-tooltip="Follow us on Twitter">
+                        <i class="fab fa-twitter fa-lg"></i>
+                      </a>
+                      <a href="#"
+                         class="social-link text-white text-decoration-none"
+                         data-sp-track="social-link"
+                         data-sp-platform="instagram"
+                         data-sp-label="Instagram Link"
+                         data-tooltip="Follow us on Instagram">
+                        <i class="fab fa-instagram fa-lg"></i>
+                      </a>
+                      <a href="#"
+                         class="social-link text-white text-decoration-none"
+                         data-sp-track="social-link"
+                         data-sp-platform="linkedin"
+                         data-sp-label="LinkedIn Link"
+                         data-tooltip="Connect with us on LinkedIn">
+                        <i class="fab fa-linkedin-in fa-lg"></i>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Map Section -->
+    <div class="row mt-5">
+      <div class="col-12" data-sp-track="map-section">
+        <div class="map-container rounded shadow-sm overflow-hidden">
+          <div class="map-header p-3 bg-light border-bottom d-flex justify-content-between align-items-center"
+               data-sp-track="map-header">
+            <h4 class="mb-0 text-primary">
+              <i class="fas fa-map-marked-alt me-2"></i>Find Us Here
+            </h4>
+            <div>
+              <button class="btn btn-sm btn-outline-primary me-2"
+                      onclick="getDirections()"
+                      data-sp-track="get-directions-btn"
+                      data-sp-label="Get Directions">
+                <i class="fas fa-route me-1"></i>Get Directions
+              </button>
+              <button class="btn btn-sm btn-outline-secondary"
+                      onclick="shareLocation()"
+                      data-sp-track="share-location-btn"
+                      data-sp-label="Share Location">
+                <i class="fas fa-share me-1"></i>Share
+              </button>
+            </div>
+          </div>
+          <div id="map" data-sp-track="google-map">
+            <iframe
+              src="https://maps.google.com/maps?q=Rajaji+Nagar+Bangalore+Karnataka&t=&z=15&ie=UTF8&iwloc=&output=embed"
+              width="100%"
+              height="400px"
+              frameborder="0"
+              style="border:0"
+              allowfullscreen
+              loading="lazy"
+              data-sp-track="map-iframe"
+              data-sp-label="Contact Location Map"
+              data-sp-location="Rajaji Nagar, Bangalore">
+            </iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Enhanced Contact-specific JavaScript -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Form progress tracking
+  const form = document.getElementById('contact');
+  const progressBar = document.getElementById('formProgressBar');
+  const requiredFields = form.querySelectorAll('[required]');
+
+  function updateFormProgress() {
+    let completedFields = 0;
+    requiredFields.forEach(field => {
+      if (field.value.trim() !== '') {
+        completedFields++;
+      }
+    });
+
+    const progress = (completedFields / requiredFields.length) * 100;
+    progressBar.style.width = progress + '%';
+
+    if (window.blogTracker) {
+      window.blogTracker.trackStructEvent('form', 'progress_update', `Form Progress: ${Math.round(progress)}%`, {
+        progress_percentage: Math.round(progress),
+        completed_fields: completedFields,
+        total_fields: requiredFields.length,
+        page_type: 'contact'
+      });
+    }
+  }
+
+  // Character counter and typing indicator
+  const messageField = document.getElementById('message');
+  const charCounter = document.getElementById('charCounter');
+  const typingIndicator = document.getElementById('typingIndicator');
+  let typingTimer;
+
+  messageField.addEventListener('input', function() {
+    const length = this.value.length;
+    const maxLength = 1000;
+    charCounter.textContent = `${length} / ${maxLength} characters`;
+
+    // Show typing indicator
+    typingIndicator.style.display = 'block';
+    clearTimeout(typingTimer);
+
+    // Hide typing indicator after user stops typing
+    typingTimer = setTimeout(() => {
+      typingIndicator.style.display = 'none';
+    }, 1000);
+
+    // Track character milestones
+    const milestones = [25, 50, 100, 200, 500, 750, 1000];
+    milestones.forEach(milestone => {
+      if (length === milestone) {
+        if (window.blogTracker) {
+          window.blogTracker.trackStructEvent('form', 'message_length_milestone', `Message Length: ${milestone}`, {
+            length: milestone,
+            field: 'message',
+            page_type: 'contact',
+            percentage_of_max: (milestone / maxLength) * 100
+          });
+        }
+      }
+    });
+
+    updateFormProgress();
+  });
+
+  // Track all form field interactions
+  requiredFields.forEach(field => {
+    field.addEventListener('focus', function() {
+      if (window.blogTracker) {
+        window.blogTracker.trackStructEvent('form', 'field_focus', `Field Focus: ${this.name}`, {
+          field_name: this.name,
+          field_type: this.type,
+          field_order: this.getAttribute('data-sp-field-order'),
+          page_type: 'contact'
+        });
+      }
+    });
+
+    field.addEventListener('blur', function() {
+      const isValid = this.checkValidity();
+      const value = this.value.trim();
+
+      if (window.blogTracker) {
+        window.blogTracker.trackStructEvent('form', 'field_blur', `Field Blur: ${this.name}`, {
+          field_name: this.name,
+          field_type: this.type,
+          is_valid: isValid,
+          has_value: value !== '',
+          value_length: value.length,
+          page_type: 'contact'
+        });
+      }
+
+      // Real-time validation
+      if (!isValid && value !== '') {
+        this.classList.add('is-invalid');
+        const feedback = this.parentNode.querySelector('.invalid-feedback');
+        if (feedback) {
+          feedback.textContent = this.validationMessage;
+        }
+      } else {
+        this.classList.remove('is-invalid');
+        this.classList.add('is-valid');
+      }
+
+      updateFormProgress();
+    });
+
+    field.addEventListener('input', updateFormProgress);
+  });
+
+  // Track dropdown selection
+  document.getElementById('subject').addEventListener('change', function() {
+    if (window.blogTracker) {
+      window.blogTracker.trackStructEvent('form', 'subject_selection', `Subject: ${this.value}`, {
+        selected_value: this.value,
+        field_name: 'subject',
+        page_type: 'contact'
+      });
+    }
+  });
+
+  // Enhanced form submission tracking
+  form.addEventListener('submit', function(e) {
+    const submitButton = document.getElementById('form-submit');
+    const buttonText = submitButton.querySelector('.button-text');
+    const buttonLoading = submitButton.querySelector('.button-loading');
+
+    // Show loading state
+    buttonText.classList.add('d-none');
+    buttonLoading.classList.remove('d-none');
+    submitButton.disabled = true;
+
+    const formData = new FormData(this);
+    const submissionData = {
+      hasName: formData.get('name') ? 'yes' : 'no',
+      hasEmail: formData.get('email') ? 'yes' : 'no',
+      hasSubject: formData.get('subject') ? 'yes' : 'no',
+      hasMessage: formData.get('message') ? 'yes' : 'no',
+      nameLength: formData.get('name') ? formData.get('name').length : 0,
+      messageLength: formData.get('message') ? formData.get('message').length : 0,
+      selectedSubject: formData.get('subject') || 'none',
+      formCompletionTime: Date.now() - window.formStartTime
+    };
+
+    if (window.blogTracker) {
+      window.blogTracker.trackStructEvent('form', 'contact_submit_attempt', 'Contact Form Submission', {
+        ...submissionData,
+        page_type: 'contact',
+        form_type: 'contact'
+      });
+    }
+  });
+
+  // Track time spent on form
+  window.formStartTime = Date.now();
+
+  // Track when user leaves the page
+  window.addEventListener('beforeunload', function() {
+    const timeSpent = Date.now() - window.formStartTime;
+    if (window.blogTracker && timeSpent > 5000) { // Only track if spent more than 5 seconds
+      window.blogTracker.trackStructEvent('engagement', 'form_time_spent', 'Time on Contact Form', {
+        time_spent_ms: timeSpent,
+        time_spent_seconds: Math.round(timeSpent / 1000),
+        page_type: 'contact'
+      });
+    }
+  });
+});
+
+// Scroll functions
+function scrollToForm() {
+  document.getElementById('contact').scrollIntoView({
+    behavior: 'smooth',
+    block: 'start'
+  });
+
+  if (window.blogTracker) {
+    window.blogTracker.trackStructEvent('navigation', 'scroll_to_form', 'Banner CTA Click', {
+      action: 'scroll-to-form',
+      trigger: 'banner-button',
+      page_type: 'contact'
+    });
+  }
+}
+
+function scrollToMap() {
+  document.getElementById('map').scrollIntoView({
+    behavior: 'smooth',
+    block: 'center'
+  });
+
+  if (window.blogTracker) {
+    window.blogTracker.trackStructEvent('navigation', 'scroll_to_map', 'View Map Button Click', {
+      action: 'scroll-to-map',
+      trigger: 'contact-info-button',
+      page_type: 'contact'
+    });
+  }
+}
+
+// Map interaction functions
+function getDirections() {
+  const address = "Rajaji Nagar, Bangalore, Karnataka";
+  const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address)}`;
+  window.open(mapsUrl, '_blank');
+
+  if (window.blogTracker) {
+    window.blogTracker.trackStructEvent('interaction', 'get_directions', 'Get Directions Click', {
+      destination: address,
+      platform: 'google_maps',
+      page_type: 'contact'
+    });
+  }
+}
+
+function shareLocation() {
+  const address = "123 Rajaji Nagar, Bangalore, Karnataka 560032";
+
+  if (navigator.share) {
+    navigator.share({
+      title: 'BlogSpot Location',
+      text: `Visit us at: ${address}`,
+      url: window.location.href
+    }).then(() => {
+      if (window.blogTracker) {
+        window.blogTracker.trackStructEvent('interaction', 'share_location', 'Native Share Success', {
+          share_method: 'native',
+          page_type: 'contact'
+        });
+      }
+    }).catch(() => {
+      // Fallback to clipboard
+      fallbackShare(address);
+    });
+  } else {
+    fallbackShare(address);
+  }
+}
+
+function fallbackShare(address) {
+  const shareText = `Visit BlogSpot at: ${address}`;
+
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(shareText).then(() => {
+      showToast('Location copied to clipboard!', 'success');
+
+      if (window.blogTracker) {
+        window.blogTracker.trackStructEvent('interaction', 'share_location', 'Clipboard Share Success', {
+          share_method: 'clipboard',
+          page_type: 'contact'
+        });
+      }
+    });
+  }
+}
+
+// Enhanced contact info interaction tracking
+document.querySelectorAll('[data-sp-track="contact-info-item"]').forEach(item => {
+  item.addEventListener('click', function() {
+    const infoType = this.getAttribute('data-sp-info-type');
+    const value = this.querySelector('[data-sp-value]')?.getAttribute('data-sp-value') || 'unknown';
+    const isClickable = this.getAttribute('data-sp-clickable') === 'true';
+
+    if (window.blogTracker) {
+      window.blogTracker.trackStructEvent('interaction', 'contact_info_click', `Contact Info: ${infoType}`, {
+        info_type: infoType,
+        info_value: value,
+        is_clickable: isClickable,
+        page_type: 'contact'
+      });
+    }
+  });
+
+  // Track hover events
+  item.addEventListener('mouseenter', function() {
+    const infoType = this.getAttribute('data-sp-info-type');
+
+    if (window.blogTracker) {
+      window.blogTracker.trackStructEvent('interaction', 'contact_info_hover', `Contact Info Hover: ${infoType}`, {
+        info_type: infoType,
+        page_type: 'contact'
+      });
+    }
+  });
+});
+
+// Enhanced social link tracking
+document.querySelectorAll('[data-sp-track="social-link"]').forEach(link => {
+  link.addEventListener('click', function(e) {
+    e.preventDefault();
+    const platform = this.getAttribute('data-sp-platform');
+
+    if (window.blogTracker) {
+      window.blogTracker.trackStructEvent('interaction', 'social_link_click', `Social: ${platform}`, {
+        platform: platform,
+        page_type: 'contact',
+        timestamp: Date.now()
+      });
+    }
+
+    showToast(`Opening ${platform.charAt(0).toUpperCase() + platform.slice(1)}...`, 'info');
+  });
+
+  // Track social link hovers
+  link.addEventListener('mouseenter', function() {
+    const platform = this.getAttribute('data-sp-platform');
+
+    if (window.blogTracker) {
+      window.blogTracker.trackStructEvent('interaction', 'social_link_hover', `Social Hover: ${platform}`, {
+        platform: platform,
+        page_type: 'contact'
+      });
+    }
+  });
+});
+
+// Enhanced copy-to-clipboard functionality
+function copyToClipboard(text, type) {
+  navigator.clipboard.writeText(text).then(function() {
+    if (window.blogTracker) {
+      window.blogTracker.trackStructEvent('interaction', 'copy_contact_info', `Copied: ${type}`, {
+        copied_text: text,
+        info_type: type,
+        page_type: 'contact',
+        copy_method: 'clipboard_api'
+      });
+    }
+
+    showToast(`Copied ${type} to clipboard!`, 'success');
+  }).catch(function() {
+    // Fallback for older browsers
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    document.body.appendChild(textArea);
+    textArea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textArea);
+
+    if (window.blogTracker) {
+      window.blogTracker.trackStructEvent('interaction', 'copy_contact_info', `Copied: ${type}`, {
+        copied_text: text,
+        info_type: type,
+        page_type: 'contact',
+        copy_method: 'fallback'
+      });
+    }
+
+    showToast(`Copied ${type} to clipboard!`, 'success');
+  });
+}
+
+// Enhanced tooltip functionality
+document.querySelectorAll('[data-tooltip]').forEach(element => {
+  element.classList.add('tooltip-custom');
+
+  element.addEventListener('mouseenter', function() {
+    const tooltip = this.getAttribute('data-tooltip');
+
+    if (window.blogTracker) {
+      window.blogTracker.trackStructEvent('interaction', 'tooltip_show', `Tooltip: ${tooltip}`, {
+        tooltip_text: tooltip,
+        element_type: this.tagName.toLowerCase(),
+        page_type: 'contact'
+      });
+    }
+  });
+});
+
+// Toast notification system
+function showToast(message, type = 'info') {
+  const toastContainer = document.getElementById('toastContainer') || createToastContainer();
+
+  const toast = document.createElement('div');
+  toast.className = `toast align-items-center text-white bg-${type === 'success' ? 'success' : type === 'error' ? 'danger' : 'primary'} border-0`;
+  toast.setAttribute('role', 'alert');
+  toast.innerHTML = `
+    <div class="d-flex">
+      <div class="toast-body">
+        <i class="fas fa-${type === 'success' ? 'check' : type === 'error' ? 'exclamation-triangle' : 'info-circle'} me-2"></i>
+        ${message}
+      </div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+    </div>
+  `;
+
+  toastContainer.appendChild(toast);
+
+  const bsToast = new bootstrap.Toast(toast);
+  bsToast.show();
+
+  // Remove toast after it's hidden
+  toast.addEventListener('hidden.bs.toast', () => {
+    toast.remove();
+  });
+
+  if (window.blogTracker) {
+    window.blogTracker.trackStructEvent('interaction', 'toast_shown', `Toast: ${type}`, {
+      message: message,
+      toast_type: type,
+      page_type: 'contact'
+    });
+  }
+}
+
+function createToastContainer() {
+  const container = document.createElement('div');
+  container.id = 'toastContainer';
+  container.className = 'toast-container position-fixed top-0 end-0 p-3';
+  container.style.zIndex = '1060';
+  document.body.appendChild(container);
+  return container;
+}
+
+// Add click-to-copy functionality for contact info
+document.querySelectorAll('[data-sp-value]').forEach(element => {
+  element.style.cursor = 'pointer';
+  element.title = 'Click to copy';
+
+  element.addEventListener('click', function() {
+    const value = this.getAttribute('data-sp-value');
+    const type = this.closest('[data-sp-info-type]')?.getAttribute('data-sp-info-type') || 'info';
+    copyToClipboard(value, type);
+  });
+});
+
+// Track page visibility changes
+document.addEventListener('visibilitychange', function() {
+  const isVisible = !document.hidden;
+
+  if (window.blogTracker) {
+    window.blogTracker.trackStructEvent('engagement', 'page_visibility_change', isVisible ? 'Page Visible' : 'Page Hidden', {
+      is_visible: isVisible,
+      timestamp: Date.now(),
+      page_type: 'contact'
+    });
+  }
+});
+</script>
+{% endblock %}

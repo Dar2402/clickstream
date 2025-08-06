@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1>Unified Search</h1>
+  <form action="/search" method="post">
+      <input type="text" name="query" placeholder="Search users, products, reviews..." required>
+      <button type="submit">Search</button>
+  </form>
+{% endblock %}

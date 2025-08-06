@@ -1,0 +1,137 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Online Bookstore</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+
+    <script type="text/javascript">
+        (function(p,l,o,w,i,n,g){if(!p[i]){p.GlobalSnowplowNamespace=p.GlobalSnowplowNamespace||[];
+        p.GlobalSnowplowNamespace.push(i);p[i]=function(){(p[i].q=p[i].q||[]).push(arguments)};
+        p[i].q=p[i].q||[];n=l.createElement(o);g=l.getElementsByTagName(o)[0];n.async=1;n.src=w;
+        g.parentNode.insertBefore(n,g)}}(window,document,"script", "{% static 'js/sp.js' %}", "snowplow"));
+
+        hostname = window.location.hostname
+
+        window.addEventListener('load', function() {
+            if(typeof window.snowplow === 'function') {
+                snowplow('newTracker', 'sp', `${hostname}`, {
+                  appId: 'clickstream',
+                  platform: 'web',
+                  contexts: {
+                    webPage: true,
+                    performanceTiming: true
+                  }
+                });
+                
+                snowplow('enableActivityTracking', { 
+                    minimumVisitLength: 30, 
+                    heartbeatDelay: 10 
+                });
+                
+                snowplow('enableLinkClickTracking');
+                snowplow('trackPageView');
+            }
+        });
+    </script>
+</head>
+
+<body>
+    <nav class="navbar navbar-dark bg-dark">
+        <a class="navbar-brand" href="{% url 'list' %}" onclick="if(typeof snowplow === 'function'){ snowplow('trackStructEvent', 'navigation_click', 'home_link', 'home'); }">Online Bookstore</a>
+
+        <div class="btn-group dropright">
+            <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+               onclick="if(typeof snowplow === 'function'){ snowplow('trackStructEvent', 'navigation_click', 'user_dropdown', 'user-menu'); }">
+                {{ user }}
+            </a>
+            <div class="dropdown-menu">
+                {% if user.is_authenticated %}
+                    <a class="dropdown-item" href="{% url 'logout' %}">Log Out</a>
+                {% else %}
+                    <a class="dropdown-item text-secondary" href="{% url 'login' %}" onclick="if(typeof snowplow === 'function'){ snowplow('trackSelfDescribingEvent', {
+                        schema: 'iglu:com.nixagone/login_click/jsonschema/1-0-0',
+                        data: { timestamp: new Date().toISOString() }
+                    }); }">Log In</a>
+                    <a class="dropdown-item text-secondary" href="{% url 'signup' %}" onclick="if(typeof snowplow === 'function'){ snowplow('trackSelfDescribingEvent', {
+                        schema: 'iglu:com.nixagone/signup_click/jsonschema/1-0-0',
+                        data: { timestamp: new Date().toISOString() }
+                    }); }">Sign Up</a>
+                {% endif %}
+            </div>
+        </div>
+
+        <form class="search" action="{% url 'search_results' %}" method="get" onsubmit="if(typeof snowplow === 'function'){ trackSearch(this); }">
+            <i class="fas fa-search"></i>
+            <input name="q" type="text" class="fas fa-search" placeholder="click to search" autocomplete="off"
+                   onfocus="if(typeof snowplow === 'function'){ snowplow('trackStructEvent', 'search_interaction', 'search_bar_focused', 'search-bar'); }"
+                   oninput="if(typeof snowplow === 'function'){ snowplow('trackStructEvent', 'search_interaction', 'search_input_typed', this.value); }">
+        </form>
+    </nav>
+
+    <br>
+
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+    <script>
+        function trackSearch(form) {
+          if(typeof snowplow === 'function'){
+            const searchTerm = form.q.value;
+            if (searchTerm) {
+              const eventData = {
+                search_term: searchTerm,
+                user: "{{ user.username|default:'anonymous'|escapejs }}",
+                timestamp: new Date().toISOString()
+              };
+              if (eventData) {
+                  snowplow('trackSelfDescribingEvent', {
+                    schema: 'iglu:com.nixagone/search_performed/jsonschema/1-0-0',
+                    data: eventData
+                  });
+              }
+            }
+          }
+        }
+        
+        // Mouse movement engagement
+        var mouseMoved = false;
+        document.addEventListener("mousemove", function () {
+          if (!mouseMoved && typeof snowplow === 'function') {
+            mouseMoved = true;
+            snowplow('trackStructEvent', 'user_engagement', 'mouse_moved', 'initial');
+          }
+        });
+
+        // Time-on-page tracking
+        window.addEventListener("pagehide", function () {
+          if(typeof snowplow === 'function'){
+            const timeSpent = Math.round(performance.now() / 1000); // in seconds
+            const eventData = {
+              duration_seconds: timeSpent,
+              page_path: window.location.pathname,
+              timestamp: new Date().toISOString()
+            };
+            
+            if (eventData) {
+              snowplow('trackSelfDescribingEvent', {
+                schema: 'iglu:com.nixagone/page_duration/jsonschema/1-0-0',
+                data: eventData
+              });
+              snowplow('flush', true);
+            }
+          }
+        });
+    </script>
+</body>
+</html>

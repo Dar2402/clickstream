@@ -1,0 +1,157 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}BlogSpot – Modern Blogging Platform{% endblock %}</title>
+
+    <!-- Core CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'assets/css/fontawesome.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/templatemo-stand-blog.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/owl.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/styles.css' %}">
+    {% block extra_css %}{% endblock %}
+
+     <script type="text/javascript">
+      ;(function(p,l,o,w,i,n,g){if(!p[i]){p.GlobalSnowplowNamespace=p.GlobalSnowplowNamespace||[];
+      p.GlobalSnowplowNamespace.push(i);p[i]=function(){(p[i].q=p[i].q||[]).push(arguments)
+      };p[i].q=p[i].q||[];n=l.createElement(o);g=l.getElementsByTagName(o)[0];n.async=1;
+      n.src=w;g.parentNode.insertBefore(n,g)}}(window,document,"script","{% static 'js/sp.js' %}","snowplow"));
+    </script>
+
+    <!-- Your other scripts -->
+    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Load your custom Snowplow tracker -->
+    <script src="{% static 'js/snowplow-tracker.js' %}"></script>
+
+    <!-- Other scripts -->
+    <script src="{% static 'assets/js/custom.js' %}"></script>
+
+    {% block extra_js %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}"
+      data-snowplow-user-id="{{ user.id|default:'anonymous' }}"
+      data-snowplow-username="{{ user.username|default:'anonymous' }}"
+      data-snowplow-page-type="{% block page_type %}base{% endblock %}">
+
+    {# ---------- NAVBAR ---------- #}
+    <header class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top" data-sp-track="navbar">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="{% url 'index' %}"
+               data-sp-track="brand-logo"
+               data-sp-label="BlogSpot Logo">
+                <i class="fas fa-blog me-2"></i>BlogSpot
+            </a>
+            <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#nav"
+                    aria-controls="nav" aria-expanded="false" aria-label="Toggle navigation"
+                    data-sp-track="nav-toggle"
+                    data-sp-label="Mobile Menu Toggle">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <nav id="nav" class="collapse navbar-collapse">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}"
+                           href="{% url 'index' %}"
+                           data-sp-track="nav-link"
+                           data-sp-label="Home"
+                           data-sp-active="{% if request.resolver_match.url_name == 'index' %}true{% else %}false{% endif %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'blog' %}active{% endif %}"
+                           href="{% url 'blog' %}"
+                           data-sp-track="nav-link"
+                           data-sp-label="Blog"
+                           data-sp-active="{% if request.resolver_match.url_name == 'blog' %}true{% else %}false{% endif %}">Blog</a>
+                    </li>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'create' %}active{% endif %}"
+                           href="{% url 'create' %}"
+                           data-sp-track="nav-link"
+                           data-sp-label="Create Post"
+                           data-sp-active="{% if request.resolver_match.url_name == 'create' %}true{% else %}false{% endif %}">Create Post</a>
+                    </li>
+                    {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}"
+                           href="{% url 'contact' %}"
+                           data-sp-track="nav-link"
+                           data-sp-label="Contact"
+                           data-sp-active="{% if request.resolver_match.url_name == 'contact' %}true{% else %}false{% endif %}">Contact</a>
+                    </li>
+                </ul>
+
+                <ul class="navbar-nav">
+                    {% if user.is_authenticated %}
+                    <li class="nav-item dropdown" data-sp-track="user-dropdown">
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#"
+                           data-sp-track="user-menu"
+                           data-sp-label="User Menu - {{ user.first_name|default:user.username }}">
+                            <i class="fas fa-user-circle me-1"></i>{{ user.first_name|default:user.username }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="{% url 'profile' user.id %}"
+                                   data-sp-track="dropdown-link"
+                                   data-sp-label="My Profile">My Profile</a></li>
+                            <li><a class="dropdown-item" href="{% url 'profileedit' user.id %}"
+                                   data-sp-track="dropdown-link"
+                                   data-sp-label="Edit Profile">Edit Profile</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="{% url 'logout' %}"
+                                   data-sp-track="auth-action"
+                                   data-sp-label="Logout"
+                                   data-sp-action="logout">Logout</a></li>
+                        </ul>
+                    </li>
+                    {% else %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'signin' %}"
+                                           data-sp-track="auth-action"
+                                           data-sp-label="Sign In"
+                                           data-sp-action="signin">Sign In</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'signup' %}"
+                                           data-sp-track="auth-action"
+                                           data-sp-label="Sign Up"
+                                           data-sp-action="signup">Sign Up</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    {# ---------- FLASH MESSAGES ---------- #}
+    {% if messages %}
+    <div class="container mt-3" data-sp-track="messages-container">
+        {% for m in messages %}
+        <div class="alert alert-{{ m.tags }} alert-dismissible fade show" role="alert"
+             data-sp-track="message-alert"
+             data-sp-label="Alert - {{ m.tags }}"
+             data-sp-message-type="{{ m.tags }}">
+            {{ m }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"
+                    data-sp-track="message-dismiss"
+                    data-sp-label="Dismiss Alert"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {# ---------- PAGE CONTENT ---------- #}
+    <main id="main" class="my-4" data-sp-track="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    {# ---------- FOOTER ---------- #}
+    <footer class="bg-dark text-light py-4" data-sp-track="footer">
+        <div class="container text-center">
+            &copy; {% now "Y" %} BlogSpot. All rights reserved.
+        </div>
+    </footer>
+</body>
+</html>

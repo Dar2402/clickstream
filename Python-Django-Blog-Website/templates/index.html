@@ -1,0 +1,1159 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}BlogSpot - Modern Blogging Platform{% endblock %}
+{% block page_type %}home{% endblock %}
+
+{% block extra_css %}
+<!-- Home page specific styles -->
+<style>
+  .hero-carousel {
+    position: relative;
+    overflow: hidden;
+    border-radius: 15px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    margin-bottom: 60px;
+  }
+
+  .carousel-item {
+    position: relative;
+    height: 500px;
+    overflow: hidden;
+  }
+
+  .carousel-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  .carousel-item:hover img {
+    transform: scale(1.05);
+  }
+
+  .carousel-caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0,0,0,0.8));
+    padding: 60px 20px 30px;
+    text-align: center;
+  }
+
+  .carousel-caption h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    letter-spacing: 2px;
+    margin: 0;
+    text-transform: uppercase;
+  }
+
+  .carousel-indicators {
+    bottom: 20px;
+  }
+
+  .carousel-indicators button {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin: 0 5px;
+    transition: all 0.3s ease;
+  }
+
+  .carousel-indicators button.active {
+    transform: scale(1.3);
+  }
+
+  .carousel-control-prev,
+  .carousel-control-next {
+    width: 60px;
+    height: 60px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.3);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+  }
+
+  .carousel-control-prev:hover,
+  .carousel-control-next:hover {
+    background: rgba(255,255,255,0.3);
+    border-color: rgba(255,255,255,0.5);
+  }
+
+  .carousel-control-prev {
+    left: 20px;
+  }
+
+  .carousel-control-next {
+    right: 20px;
+  }
+
+  .section-heading {
+    position: relative;
+    margin-bottom: 40px;
+  }
+
+  .section-heading::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    border-radius: 2px;
+  }
+
+  .blog-post {
+    transition: all 0.3s ease;
+    margin-bottom: 30px;
+    border-radius: 15px;
+    overflow: hidden;
+    background: white;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+  }
+
+  .blog-post:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+  }
+
+  .blog-post img {
+    transition: transform 0.5s ease;
+    border-radius: 15px 15px 0 0;
+  }
+
+  .blog-post:hover img {
+    transform: scale(1.05);
+  }
+
+  .blog-post-content {
+    padding: 25px;
+    position: relative;
+  }
+
+  .category-tag {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 6px 15px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 15px;
+    transition: transform 0.2s ease;
+  }
+
+  .category-tag:hover {
+    transform: scale(1.05);
+  }
+
+  .blog-post h5 {
+    color: #2c3e50;
+    font-weight: 600;
+    line-height: 1.4;
+    margin-bottom: 15px;
+    transition: color 0.3s ease;
+  }
+
+  .blog-post:hover h5 {
+    color: #667eea;
+  }
+
+  .like-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(255,255,255,0.9);
+    border: none;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+  }
+
+  .like-button:hover {
+    background: #fff;
+    transform: scale(1.1);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  }
+
+  .like-button i {
+    font-size: 18px;
+    transition: all 0.3s ease;
+  }
+
+  .like-button:hover i {
+    transform: scale(1.2);
+  }
+
+  .sidebar {
+    background: #f8f9fa;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+  }
+
+  .sidebar-item {
+    margin-bottom: 30px;
+  }
+
+  .sidebar-item ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .sidebar-item li {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    transition: all 0.3s ease;
+  }
+
+  .sidebar-item li:hover {
+    transform: translateX(10px);
+  }
+
+  .sidebar-item img {
+    border-radius: 10px;
+    margin-bottom: 15px;
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar-item li:hover img {
+    transform: scale(1.02);
+  }
+
+  .view-all-link {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 12px 30px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    margin-top: 20px;
+  }
+
+  .view-all-link:hover {
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+  }
+
+  .stats-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0,0,0,0.8));
+    padding: 20px;
+    color: white;
+    font-size: 0.9rem;
+  }
+
+  .post-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+  }
+
+  .author-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .author-avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  .engagement-stats {
+    display: flex;
+    gap: 15px;
+    color: #6c757d;
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 768px) {
+    .carousel-caption h1 {
+      font-size: 2rem;
+    }
+
+    .carousel-item {
+      height: 300px;
+    }
+
+    .carousel-control-prev,
+    .carousel-control-next {
+      width: 40px;
+      height: 40px;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Carousel Section -->
+<div class="container mt-4">
+  <div class="hero-carousel" data-sp-track="hero-section">
+    <div id="carouselExampleCaptions"
+         class="carousel slide"
+         data-bs-ride="carousel"
+         data-sp-track="hero-carousel"
+         data-sp-label="Hero Carousel">
+
+      <!-- Carousel Indicators -->
+      <div class="carousel-indicators" data-sp-track="carousel-indicators">
+        <button type="button"
+                data-bs-target="#carouselExampleCaptions"
+                data-bs-slide-to="0"
+                class="active"
+                aria-current="true"
+                aria-label="Slide 1"
+                data-sp-track="carousel-indicator"
+                data-sp-slide="0"
+                data-sp-label="Nature Slide"></button>
+        <button type="button"
+                data-bs-target="#carouselExampleCaptions"
+                data-bs-slide-to="1"
+                aria-label="Slide 2"
+                data-sp-track="carousel-indicator"
+                data-sp-slide="1"
+                data-sp-label="Travel Slide"></button>
+        <button type="button"
+                data-bs-target="#carouselExampleCaptions"
+                data-bs-slide-to="2"
+                aria-label="Slide 3"
+                data-sp-track="carousel-indicator"
+                data-sp-slide="2"
+                data-sp-label="Education Slide"></button>
+        <button type="button"
+                data-bs-target="#carouselExampleCaptions"
+                data-bs-slide-to="3"
+                aria-label="Slide 4"
+                data-sp-track="carousel-indicator"
+                data-sp-slide="3"
+                data-sp-label="Technology Slide"></button>
+        <button type="button"
+                data-bs-target="#carouselExampleCaptions"
+                data-bs-slide-to="4"
+                aria-label="Slide 5"
+                data-sp-track="carousel-indicator"
+                data-sp-slide="4"
+                data-sp-label="AI Slide"></button>
+      </div>
+
+      <!-- Carousel Items -->
+      <div class="carousel-inner" data-sp-track="carousel-content">
+        <div class="carousel-item active"
+             data-sp-track="carousel-slide"
+             data-sp-category="nature"
+             data-sp-slide-index="0">
+          <img src="{% static 'assets/images/nature.jpg' %}"
+               alt="Nature Photography"
+               data-sp-track="carousel-image"
+               data-sp-label="Nature Image"
+               data-sp-category="nature">
+          <div class="carousel-caption"
+               data-sp-track="carousel-caption"
+               data-sp-category="nature">
+            <h1 data-sp-track="carousel-title"
+                data-sp-label="Nature Title">NATURE</h1>
+          </div>
+        </div>
+
+        <div class="carousel-item"
+             data-sp-track="carousel-slide"
+             data-sp-category="travel"
+             data-sp-slide-index="1">
+          <img src="{% static 'assets/images/travel.jpg' %}"
+               alt="Travel Adventures"
+               data-sp-track="carousel-image"
+               data-sp-label="Travel Image"
+               data-sp-category="travel">
+          <div class="carousel-caption d-none d-md-block"
+               data-sp-track="carousel-caption"
+               data-sp-category="travel">
+            <h1 data-sp-track="carousel-title"
+                data-sp-label="Travel Title">TRAVEL</h1>
+          </div>
+        </div>
+
+        <div class="carousel-item"
+             data-sp-track="carousel-slide"
+             data-sp-category="education"
+             data-sp-slide-index="2">
+          <img src="{% static 'assets/images/education.jpg' %}"
+               alt="Educational Content"
+               data-sp-track="carousel-image"
+               data-sp-label="Education Image"
+               data-sp-category="education">
+          <div class="carousel-caption d-none d-md-block"
+               data-sp-track="carousel-caption"
+               data-sp-category="education">
+            <h1 data-sp-track="carousel-title"
+                data-sp-label="Education Title">EDUCATION</h1>
+          </div>
+        </div>
+
+        <div class="carousel-item"
+             data-sp-track="carousel-slide"
+             data-sp-category="technology"
+             data-sp-slide-index="3">
+          <img src="{% static 'assets/images/tech.jpg' %}"
+               alt="Technology Innovations"
+               data-sp-track="carousel-image"
+               data-sp-label="Technology Image"
+               data-sp-category="technology">
+          <div class="carousel-caption d-none d-md-block"
+               data-sp-track="carousel-caption"
+               data-sp-category="technology">
+            <h1 data-sp-track="carousel-title"
+                data-sp-label="Technology Title">TECHNOLOGY</h1>
+          </div>
+        </div>
+
+        <div class="carousel-item"
+             data-sp-track="carousel-slide"
+             data-sp-category="ai"
+             data-sp-slide-index="4">
+          <img src="{% static 'assets/images/ai.jpg' %}"
+               alt="Artificial Intelligence"
+               data-sp-track="carousel-image"
+               data-sp-label="AI Image"
+               data-sp-category="ai">
+          <div class="carousel-caption d-none d-md-block"
+               data-sp-track="carousel-caption"
+               data-sp-category="ai">
+            <h1 data-sp-track="carousel-title"
+                data-sp-label="AI Title">ARTIFICIAL INTELLIGENCE</h1>
+          </div>
+        </div>
+      </div>
+
+      <!-- Carousel Controls -->
+      <button class="carousel-control-prev"
+              type="button"
+              data-bs-target="#carouselExampleCaptions"
+              data-bs-slide="prev"
+              data-sp-track="carousel-control"
+              data-sp-direction="previous"
+              data-sp-label="Previous Slide">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+
+      <button class="carousel-control-next"
+              type="button"
+              data-bs-target="#carouselExampleCaptions"
+              data-bs-slide="next"
+              data-sp-track="carousel-control"
+              data-sp-direction="next"
+              data-sp-label="Next Slide">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- User's Posts Section -->
+{% if user.is_authenticated %}
+<div class="container mt-5" data-sp-track="user-posts-section">
+  <div class="section-heading">
+    <h2 data-sp-track="section-title"
+        data-sp-label="My Posts">MY POSTS</h2>
+  </div>
+
+  <div class="row" data-sp-track="my-posts-grid">
+    {% for post in posts|slice:"0:3" %}
+    <div class="col-lg-4 col-md-6 col-12 mb-4"
+         data-sp-track="user-post-container"
+         data-sp-post-id="{{ post.id }}"
+         data-sp-post-title="{{ post.postname }}"
+         data-sp-post-category="{{ post.category }}">
+
+      <article class="blog-post"
+               data-sp-track="user-blog-post"
+               data-sp-post-id="{{ post.id }}">
+
+        <div class="position-relative">
+          <img src="{{ media_url }}{{ post.image }}"
+               alt="{{ post.postname }}"
+               class="img-fluid"
+               data-sp-track="post-image"
+               data-sp-label="User Post Image"
+               data-sp-post-id="{{ post.id }}">
+
+          <!-- Like Button -->
+          <form method="post"
+                action="{% url 'increaselikes' post.id %}"
+                class="position-absolute"
+                style="top: 15px; right: 15px;"
+                data-sp-track="like-form"
+                data-sp-post-id="{{ post.id }}">
+            {% csrf_token %}
+            <button class="like-button"
+                    type="submit"
+                    data-sp-track="like-btn"
+                    data-sp-label="Like User Post"
+                    data-sp-post-id="{{ post.id }}"
+                    data-sp-post-title="{{ post.postname }}"
+                    data-sp-likes-count="{{ post.likes }}"
+                    title="Like this post">
+              <i class="fa fa-heart text-danger"></i>
+            </button>
+          </form>
+        </div>
+
+        <div class="blog-post-content">
+          <a href="{% url 'post' post.id %}"
+             class="text-decoration-none"
+             data-sp-track="user-post-link"
+             data-sp-label="{{ post.postname }}"
+             data-sp-post-id="{{ post.id }}">
+
+            <span class="category-tag"
+                  data-sp-track="post-category"
+                  data-sp-label="{{ post.category }}"
+                  data-sp-post-id="{{ post.id }}">{{ post.category }}</span>
+
+            <h5 data-sp-track="post-title"
+                data-sp-label="{{ post.postname }}"
+                data-sp-post-id="{{ post.id }}">{{ post.postname }}</h5>
+          </a>
+
+          <p class="text-muted mb-3"
+             data-sp-track="post-excerpt"
+             data-sp-post-id="{{ post.id }}">{{ post.content|slice:"0:100" }}...</p>
+
+          <div class="post-meta">
+            <div class="author-info">
+              <div class="author-avatar">{{ post.author.first_name.0|default:post.author.username.0|upper }}</div>
+              <span class="text-muted small">{{ post.author.username }}</span>
+            </div>
+            <div class="engagement-stats">
+              <span data-sp-track="post-stats"
+                    data-sp-stat-type="likes"
+                    data-sp-post-id="{{ post.id }}">
+                <i class="fas fa-heart"></i> {{ post.likes }}
+              </span>
+              <span class="text-primary small"
+                    data-sp-track="post-stats"
+                    data-sp-stat-type="date"
+                    data-sp-post-id="{{ post.id }}">{{ post.time }}</span>
+            </div>
+          </div>
+        </div>
+      </article>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="text-center">
+    <a class="view-all-link"
+       href="{% url 'profile' user.id %}"
+       data-sp-track="view-all-link"
+       data-sp-label="View All My Posts"
+       data-sp-destination="profile">
+      <i class="fas fa-arrow-right me-2"></i>View All My Posts
+    </a>
+  </div>
+</div>
+{% endif %}
+
+<!-- Recent Posts Section -->
+<section class="blog-posts py-5" data-sp-track="recent-posts-section">
+  <div class="container">
+    <div class="section-heading">
+      <h2 data-sp-track="section-title"
+          data-sp-label="Recent Posts">RECENT POSTS</h2>
+    </div>
+
+    <div class="row">
+      <!-- Main Posts Grid -->
+      <div class="col-lg-8" data-sp-track="main-posts-grid">
+        <div class="row" data-sp-track="recent-posts-container">
+          {% for post in top_posts|slice:"0:6" %}
+          <div class="col-lg-6 col-md-6 col-12 mb-4"
+               data-sp-track="recent-post-container"
+               data-sp-post-id="{{ post.id }}"
+               data-sp-post-index="{{ forloop.counter0 }}"
+               data-sp-post-category="{{ post.category }}">
+
+            <article class="blog-post h-100"
+                     data-sp-track="recent-blog-post"
+                     data-sp-post-id="{{ post.id }}">
+
+              <div class="position-relative">
+                <img src="{{ media_url }}{{ post.image }}"
+                     alt="{{ post.postname }}"
+                     class="img-fluid"
+                     data-sp-track="recent-post-image"
+                     data-sp-label="Recent Post Image"
+                     data-sp-post-id="{{ post.id }}">
+
+                <!-- Like Button -->
+                <form method="post"
+                      action="{% url 'increaselikes' post.id %}"
+                      class="position-absolute"
+                      style="top: 15px; right: 15px;"
+                      data-sp-track="recent-like-form"
+                      data-sp-post-id="{{ post.id }}">
+                  {% csrf_token %}
+                  <button class="like-button"
+                          type="submit"
+                          data-sp-track="recent-like-btn"
+                          data-sp-label="Like Recent Post"
+                          data-sp-post-id="{{ post.id }}"
+                          data-sp-post-title="{{ post.postname }}"
+                          data-sp-likes-count="{{ post.likes }}"
+                          data-sp-post-position="{{ forloop.counter0 }}"
+                          title="Like this post">
+                    <i class="fa fa-heart text-danger"></i>
+                  </button>
+                </form>
+              </div>
+
+              <div class="blog-post-content">
+                <a href="{% url 'post' post.id %}"
+                   class="text-decoration-none"
+                   data-sp-track="recent-post-link"
+                   data-sp-label="{{ post.postname }}"
+                   data-sp-post-id="{{ post.id }}"
+                   data-sp-post-position="{{ forloop.counter0 }}">
+
+                  <span class="category-tag"
+                        data-sp-track="recent-post-category"
+                        data-sp-label="{{ post.category }}"
+                        data-sp-post-id="{{ post.id }}">{{ post.category }}</span>
+
+                  <h5 data-sp-track="recent-post-title"
+                      data-sp-label="{{ post.postname }}"
+                      data-sp-post-id="{{ post.id }}">{{ post.postname }}</h5>
+                </a>
+
+                <p class="text-muted mb-3"
+                   data-sp-track="recent-post-excerpt"
+                   data-sp-post-id="{{ post.id }}">{{ post.content|slice:"0:100" }}...</p>
+
+                <div class="post-meta">
+                  <div class="author-info">
+                    <div class="author-avatar">{{ post.author.first_name.0|default:post.author.username.0|upper }}</div>
+                    <span class="text-muted small"
+                          data-sp-track="author-name"
+                          data-sp-author="{{ post.author.username }}"
+                          data-sp-post-id="{{ post.id }}">{{ post.author.username }}</span>
+                  </div>
+                  <div class="engagement-stats">
+                    <span data-sp-track="recent-post-stats"
+                          data-sp-stat-type="likes"
+                          data-sp-post-id="{{ post.id }}">
+                      <i class="fas fa-heart"></i> {{ post.likes }}
+                    </span>
+                    <span class="text-primary small"
+                          data-sp-track="recent-post-stats"
+                          data-sp-stat-type="date"
+                          data-sp-post-id="{{ post.id }}">{{ post.time }}</span>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="col-lg-4" data-sp-track="sidebar-section">
+        <div class="sidebar">
+          <div class="sidebar-item">
+            <div class="sidebar-heading mb-4">
+              <h3 data-sp-track="sidebar-title"
+                  data-sp-label="Popular Posts">Popular Posts</h3>
+            </div>
+
+            <div class="content" data-sp-track="popular-posts-list">
+              <ul>
+                {% for post in recent_posts|slice:"0:5" %}
+                <li data-sp-track="popular-post-item"
+                    data-sp-post-id="{{ post.id }}"
+                    data-sp-post-position="{{ forloop.counter0 }}">
+
+                  <img src="{{ media_url }}{{ post.image }}"
+                       class="img-fluid"
+                       alt="{{ post.postname }}"
+                       data-sp-track="popular-post-image"
+                       data-sp-label="Popular Post Image"
+                       data-sp-post-id="{{ post.id }}">
+
+                  <a href="{% url 'post' post.id %}"
+                     class="text-decoration-none text-dark"
+                     data-sp-track="popular-post-link"
+                     data-sp-label="{{ post.postname }}"
+                     data-sp-post-id="{{ post.id }}"
+                     data-sp-post-position="{{ forloop.counter0 }}">
+                    <h6 class="mt-2 mb-1"
+                        data-sp-track="popular-post-title"
+                        data-sp-post-id="{{ post.id }}">{{ post.postname }}</h6>
+                  </a>
+
+                  <span class="text-muted small"
+                        data-sp-track="popular-post-date"
+                        data-sp-post-id="{{ post.id }}">{{ post.time }}</span>
+                </li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+
+          <!-- Additional Sidebar Widget -->
+          <div class="sidebar-item">
+            <div class="sidebar-heading mb-4">
+              <h4 data-sp-track="sidebar-widget-title"
+                  data-sp-label="Quick Actions">Quick Actions</h4>
+            </div>
+            <div class="d-grid gap-2">
+              {% if user.is_authenticated %}
+              <a href="{% url 'create' %}"
+                 class="btn btn-primary"
+                 data-sp-track="quick-action-btn"
+                 data-sp-label="Create New Post"
+                 data-sp-action="create-post">
+                <i class="fas fa-plus me-2"></i>Create New Post
+              </a>
+              <a href="{% url 'profile' user.id %}"
+                 class="btn btn-outline-secondary"
+                 data-sp-track="quick-action-btn"
+                 data-sp-label="My Profile"
+                 data-sp-action="view-profile">
+                <i class="fas fa-user me-2"></i>My Profile
+              </a>
+              {% else %}
+              <a href="{% url 'signin' %}"
+                 class="btn btn-primary"
+                 data-sp-track="quick-action-btn"
+                 data-sp-label="Sign In"
+                 data-sp-action="signin">
+                <i class="fas fa-sign-in-alt me-2"></i>Sign In
+              </a>
+              <a href="{% url 'signup' %}"
+                 class="btn btn-outline-secondary"
+                 data-sp-track="quick-action-btn"
+                 data-sp-label="Sign Up"
+                 data-sp-action="signup">
+                <i class="fas fa-user-plus me-2"></i>Sign Up
+              </a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Enhanced JavaScript for Comprehensive Tracking -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Track carousel interactions
+  const carousel = document.getElementById('carouselExampleCaptions');
+  let currentSlide = 0;
+  let slideStartTime = Date.now();
+
+  // Track carousel slide changes
+  carousel.addEventListener('slid.bs.carousel', function(e) {
+    const newSlide = e.to;
+    const slideViewTime = Date.now() - slideStartTime;
+    const slideElement = e.relatedTarget;
+    const category = slideElement.getAttribute('data-sp-category');
+
+    if (window.blogTracker) {
+      // Track slide view time
+      window.blogTracker.trackStructEvent('carousel', 'slide_view_time', `Slide ${currentSlide} View Time`, {
+        slide_index: currentSlide,
+        view_time_ms: slideViewTime,
+        view_time_seconds: Math.round(slideViewTime / 1000),
+        slide_category: document.querySelector(`[data-sp-slide-index="${currentSlide}"]`)?.getAttribute('data-sp-category'),
+        page_type: 'home'
+      });
+
+      // Track new slide view
+      window.blogTracker.trackStructEvent('carousel', 'slide_change', `Slide Changed to ${category}`, {
+        previous_slide: currentSlide,
+        new_slide: newSlide,
+        slide_category: category,
+        interaction_type: 'auto_or_user',
+        page_type: 'home'
+      });
+    }
+
+    currentSlide = newSlide;
+    slideStartTime = Date.now();
+  });
+
+  // Track carousel auto-play vs manual navigation
+  let lastInteractionTime = 0;
+
+  carousel.addEventListener('slide.bs.carousel', function(e) {
+    const timeSinceLastInteraction = Date.now() - lastInteractionTime;
+    const isManualInteraction = timeSinceLastInteraction < 100; // Within 100ms of user interaction
+
+    if (window.blogTracker) {
+      window.blogTracker.trackStructEvent('carousel', 'slide_trigger', isManualInteraction ? 'Manual Navigation' : 'Auto Play', {
+        trigger_type: isManualInteraction ? 'manual' : 'auto',
+        slide_from: e.from,
+        slide_to: e.to,
+        page_type: 'home'
+      });
+    }
+  });
+
+  // Track carousel control clicks
+  document.querySelectorAll('[data-sp-track="carousel-control"]').forEach(control => {
+    control.addEventListener('click', function() {
+      lastInteractionTime = Date.now();
+      const direction = this.getAttribute('data-sp-direction');
+
+      if (window.blogTracker) {
+        window.blogTracker.trackStructEvent('carousel', 'control_click', `Carousel ${direction}`, {
+          direction: direction,
+          current_slide: currentSlide,
+          page_type: 'home'
+        });
+      }
+    });
+  });
+
+  // Track carousel indicator clicks
+  document.querySelectorAll('[data-sp-track="carousel-indicator"]').forEach(indicator => {
+    indicator.addEventListener('click', function() {
+      lastInteractionTime = Date.now();
+      const slideIndex = this.getAttribute('data-sp-slide');
+      const slideLabel = this.getAttribute('data-sp-label');
+
+      if (window.blogTracker) {
+        window.blogTracker.trackStructEvent('carousel', 'indicator_click', `Jump to ${slideLabel}`, {
+          target_slide: slideIndex,
+          current_slide: currentSlide,
+          slide_label: slideLabel,
+          page_type: 'home'
+        });
+      }
+    });
+  });
+
+  // Track carousel image clicks
+  document.querySelectorAll('[data-sp-track="carousel-image"]').forEach(image => {
+    image.addEventListener('click', function() {
+      const category = this.getAttribute('data-sp-category');
+      const slideIndex = this.closest('[data-sp-slide-index]').getAttribute('data-sp-slide-index');
+
+      if (window.blogTracker) {
+        window.blogTracker.trackStructEvent('carousel', 'image_click', `Carousel Image Click: ${category}`, {
+          category: category,
+          slide_index: slideIndex,
+          page_type: 'home'
+        });
+      }
+    });
+  });
+
+  // Track post interactions with enhanced context
+  document.querySelectorAll('[data-sp-track="user-post-link"], [data-sp-track="recent-post-link"], [data-sp-track="popular-post-link"]').forEach(link => {
+    link.addEventListener('click', function() {
+      const postId = this.getAttribute('data-sp-post-id');
+      const postTitle = this.getAttribute('data-sp-label');
+      const postPosition = this.getAttribute('data-sp-post-position');
+      const linkType = this.getAttribute('data-sp-track');
+      const section = linkType.replace('-post-link', '').replace('-', '_');
+
+      if (window.blogTracker) {
+        window.blogTracker.trackStructEvent('post', 'click', `Post Click: ${postTitle}`, {
+          post_id: postId,
+          post_title: postTitle,
+          post_position: postPosition,
+          section: section,
+          link_type: linkType,
+          page_type: 'home'
+        });
+      }
+    });
+  });
+
+  // Track like button interactions with detailed context
+  document.querySelectorAll('[data-sp-track*="like-btn"]').forEach(button => {
+    button.addEventListener('click', function(e) {
+      e.preventDefault(); // Prevent form submission for tracking
+
+      const postId = this.getAttribute('data-sp-post-id');
+      const postTitle = this.getAttribute('data-sp-post-title');
+      const likesCount = this.getAttribute('data-sp-likes-count');
+      const postPosition = this.getAttribute('data-sp-post-position');
+      const buttonType = this.getAttribute('data-sp-track');
+      const section = buttonType.includes('user') ? 'user_posts' : buttonType.includes('recent') ? 'recent_posts' : 'unknown';
+
+      if (window.blogTracker) {
+        window.blogTracker.trackStructEvent('engagement', 'like_post', `Like: ${postTitle}`, {
+          post_id: postId,
+          post_title: postTitle,
+          current_likes: likesCount,
+          post_position: postPosition,
+          section: section,
+          button_type: buttonType,
+          page_type: 'home'
+        });
+      }
+
+      // Add visual feedback
+      const icon = this.querySelector('i');
+      icon.style.transform = 'scale(1.5)';
+      setTimeout(() => {
+        icon.style.transform = 'scale(1)';
+      }, 300);
+
+      // Submit form after tracking
+      setTimeout(() => {
+        this.closest('form').submit();
+      }, 100);
+    });
+
+    // Track like button hovers
+    button.addEventListener('mouseenter', function() {
+      const postId = this.getAttribute('data-sp-post-id');
+      const section = this.getAttribute('data-sp-track').includes('user') ? 'user_posts' : 'recent_posts';
+
+      if (window.blogTracker) {
+        window.blogTracker.trackStructEvent('interaction', 'like_button_hover', 'Like Button Hover', {
+          post_id: postId,
+          section: section,
+          page_type: 'home'
+        });
+      }
+    });
+  });
+
+  // Track category tag clicks
+  document.querySelectorAll('[data-sp-track*="post-category"]').forEach(category => {
+    category.addEventListener('click', function(e) {
+      e.preventDefault();
+      const categoryName = this.getAttribute('data-sp-label');
+      const postId = this.getAttribute('data-sp-post-id');
+
+      if (window.blogTracker) {
+        window.blogTracker.trackStructEvent('navigation', 'category_click', `Category: ${categoryName}`, {
+          category: categoryName,
+          post_id: postId,
+          page_type: 'home'
+        });
+      }
+
+      // Redirect to blog page with category filter
+      window.location.href = `/blog/?category=${encodeURIComponent(categoryName)}`;
+    });
+  });
+
+  // Track scroll behavior and reading patterns
+  let maxScrollDepth = 0;
+  let sectionViews = new Set();
+
+  window.addEventListener('scroll', throttle(function() {
+    const scrollDepth = Math.round((window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100);
+
+    if (scrollDepth > maxScrollDepth) {
+      maxScrollDepth = scrollDepth;
+
+      // Track major scroll milestones
+      [25, 50, 75, 90, 100].forEach(milestone => {
+        if (scrollDepth >= milestone && !sectionViews.has(`scroll_${milestone}`)) {
+          sectionViews.add(`scroll_${milestone}`);
+
+          if (window.blogTracker) {
+            window.blogTracker.trackStructEvent('engagement', 'scroll_depth', `${milestone}% Scrolled`, {
+              scroll_depth: milestone,
+              page_type: 'home'
+            });
+          }
+        }
+      });
+    }
+
+    // Track section visibility
+    const sections = ['hero-section', 'user-posts-section', 'recent-posts-section'];
+    sections.forEach(sectionId => {
+      const element = document.querySelector(`[data-sp-track="${sectionId}"]`);
+      if (element && isElementInViewport(element) && !sectionViews.has(sectionId)) {
+        sectionViews.add(sectionId);
+
+        if (window.blogTracker) {
+          window.blogTracker.trackStructEvent('engagement', 'section_view', `Section Viewed: ${sectionId}`, {
+            section: sectionId,
+            scroll_position: scrollDepth,
+            page_type: 'home'
+          });
+        }
+      }
+    });
+  }, 500));
+
+  // Track time spent on page sections
+  const sectionTimers = {};
+
+  function trackSectionTime() {
+    const sections = document.querySelectorAll('[data-sp-track$="-section"]');
+    sections.forEach(section => {
+      const sectionId = section.getAttribute('data-sp-track');
+
+      if (isElementInViewport(section)) {
+        if (!sectionTimers[sectionId]) {
+          sectionTimers[sectionId] = Date.now();
+        }
+      } else if (sectionTimers[sectionId]) {
+        const timeSpent = Date.now() - sectionTimers[sectionId];
+
+        if (timeSpent > 3000 && window.blogTracker) { // Only track if spent more than 3 seconds
+          window.blogTracker.trackStructEvent('engagement', 'section_time', `Time in ${sectionId}`, {
+            section: sectionId,
+            time_spent_ms: timeSpent,
+            time_spent_seconds: Math.round(timeSpent / 1000),
+            page_type: 'home'
+          });
+        }
+
+        delete sectionTimers[sectionId];
+      }
+    });
+  }
+
+  // Track section time every 2 seconds
+  setInterval(trackSectionTime, 2000);
+
+  // Track quick action button clicks
+  document.querySelectorAll('[data-sp-track="quick-action-btn"]').forEach(button => {
+    button.addEventListener('click', function() {
+      const action = this.getAttribute('data-sp-action');
+      const label = this.getAttribute('data-sp-label');
+
+      if (window.blogTracker) {
+        window.blogTracker.trackStructEvent('interaction', 'quick_action', `Quick Action: ${action}`, {
+          action: action,
+          label: label,
+          user_authenticated: {{ user.is_authenticated|yesno:'true,false' }},
+          page_type: 'home'
+        });
+      }
+    });
+  });
+
+  // Track view all links
+  document.querySelectorAll('[data-sp-track="view-all-link"]').forEach(link => {
+    link.addEventListener('click', function() {
+      const destination = this.getAttribute('data-sp-destination');
+      const label = this.getAttribute('data-sp-label');
+
+      if (window.blogTracker) {
+        window.blogTracker.trackStructEvent('navigation', 'view_all_click', label, {
+          destination: destination,
+          page_type: 'home'
+        });
+      }
+    });
+  });
+
+  // Track page performance
+  window.addEventListener('load', function() {
+    setTimeout(() => {
+      if (window.performance && window.blogTracker) {
+        const navigation = performance.getEntriesByType('navigation')[0];
+
+        window.blogTracker.trackStructEvent('performance', 'page_load', 'Home Page Load', {
+          load_time: Math.round(navigation.loadEventEnd - navigation.fetchStart),
+          dom_ready: Math.round(navigation.domContentLoadedEventEnd - navigation.fetchStart),
+          first_paint: performance.getEntriesByType('paint')[0]?.startTime || 0,
+          page_type: 'home'
+        });
+      }
+    }, 1000);
+  });
+
+  // Track user engagement patterns
+  let lastActivity = Date.now();
+  let totalInteractions = 0;
+
+  ['click', 'scroll', 'mousemove', 'keydown'].forEach(eventType => {
+    document.addEventListener(eventType, function() {
+      lastActivity = Date.now();
+      totalInteractions++;
+    });
+  });
+
+  // Track session end
+  window.addEventListener('beforeunload', function() {
+    const sessionTime = Date.now() - performance.timeOrigin;
+    const timeActive = Date.now() - lastActivity < 30000; // Active if last activity was within 30 seconds
+
+    if (window.blogTracker && sessionTime > 5000) {
+      window.blogTracker.trackStructEvent('engagement', 'session_end', 'Home Page Session', {
+        session_duration_ms: sessionTime,
+        session_duration_seconds: Math.round(sessionTime / 1000),
+        total_interactions: totalInteractions,
+        max_scroll_depth: maxScrollDepth,
+        sections_viewed: Array.from(sectionViews).length,
+        was_active_at_exit: timeActive,
+        page_type: 'home'
+      });
+    }
+  });
+});
+
+// Utility functions
+function throttle(func, limit) {
+  let inThrottle;
+  return function() {
+    const args = arguments;
+    const context = this;
+    if (!inThrottle) {
+      func.apply(context, args);
+      inThrottle = true;
+      setTimeout(() => inThrottle = false, limit);
+    }
+  }
+}
+
+function isElementInViewport(el) {
+  const rect = el.getBoundingClientRect();
+  return (
+    rect.top >= 0 &&
+    rect.left >= 0 &&
+    rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+    rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+  );
+}
+</script>
+{% endblock %}

@@ -1,0 +1,293 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Blog – BlogSpot{% endblock %}
+{% block body_class %}blog-page{% endblock %}
+
+{% block content %}
+<!-- ---------- HERO / CAROUSEL ---------- -->
+<div class="container mt-5">
+  <div id="hero" class="carousel slide" data-snowplow-track="carousel">
+    <div class="carousel-indicators">
+      {% for i in "0123" %}
+      <button type="button"
+              data-bs-target="#hero"
+              data-bs-slide-to="{{ forloop.counter0 }}"
+              class="{% if forloop.first %}active{% endif %}"
+              data-snowplow-track="carousel-indicator"
+              data-slide-index="{{ forloop.counter0 }}">
+      </button>
+      {% endfor %}
+    </div>
+
+    <div class="carousel-inner">
+      {% for img in carousel_images %}
+      <div class="carousel-item {% if forloop.first %}active{% endif %}"
+           data-snowplow-track="carousel-item"
+           data-image-index="{{ forloop.counter0 }}">
+        <img class="d-block w-100"
+             src="{% static 'assets/images/'|add:img %}"
+             alt="banner {{ forloop.counter }}"
+             data-snowplow-track="carousel-image">
+      </div>
+      {% endfor %}
+    </div>
+
+    <button class="carousel-control-prev"
+            type="button"
+            data-bs-target="#hero"
+            data-bs-slide="prev"
+            data-snowplow-track="carousel-control"
+            data-direction="prev">
+      <span class="carousel-control-prev-icon"></span>
+    </button>
+    <button class="carousel-control-next"
+            type="button"
+            data-bs-target="#hero"
+            data-bs-slide="next"
+            data-snowplow-track="carousel-control"
+            data-direction="next">
+      <span class="carousel-control-next-icon"></span>
+    </button>
+  </div>
+</div>
+
+<!-- ---------- MY POSTS ---------- -->
+{% if user.is_authenticated and posts %}
+<section class="container my-5" data-snowplow-track="my-posts-section">
+  <h3 class="mb-3">My Posts</h3>
+  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    {% for p in posts|slice:":3" %}
+    <div class="col" data-snowplow-track="post-card" data-post-id="{{ p.id }}">
+      <div class="card h-100 shadow-sm">
+        <img src="{{ media_url }}{{ p.image }}"
+             class="card-img-top"
+             style="object-fit:cover; height:200px;"
+             alt="{{ p.postname }}"
+             data-snowplow-track="post-image">
+        <div class="card-body">
+          <span class="badge bg-info mb-2"
+                data-snowplow-track="post-category"
+                data-category="{{ p.category }}">
+            {{ p.category }}
+          </span>
+          <h5 class="card-title">
+            <a class="text-decoration-none text-dark post-link"
+               href="{% url 'post' p.id %}"
+               data-post-id="{{ p.id }}"
+               data-post-title="{{ p.postname }}"
+               data-snowplow-track="post-title-link">
+              {{ p.postname }}
+            </a>
+          </h5>
+          <p class="card-text" data-snowplow-track="post-preview">
+            {{ p.content|slice:":100" }}…
+          </p>
+        </div>
+        <div class="card-footer d-flex justify-content-between align-items-center">
+          <small class="text-muted" data-snowplow-track="post-timestamp">
+            {{ p.time }}
+          </small>
+          <form method="post" action="{% url 'increaselikes' p.id %}" data-snowplow-track="like-form">
+            {% csrf_token %}
+            <button class="btn btn-sm btn-light like-btn"
+                    data-post-id="{{ p.id }}"
+                    data-post-title="{{ p.postname }}"
+                    data-snowplow-track="like-button">
+              <i class="fa fa-heart text-danger"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="text-end mt-2">
+    <a class="text-decoration-none"
+       href="{% url 'profile' user.id %}"
+       data-snowplow-track="view-all-posts-link">
+      View All &raquo;
+    </a>
+  </div>
+</section>
+{% endif %}
+
+<!-- ---------- RECENT POSTS ---------- -->
+<section class="container my-5" data-snowplow-track="recent-posts-section">
+  <h3 class="text-center mb-4" style="color:#e75c5c;" data-snowplow-track="section-title">Recent Posts</h3>
+  <div class="row g-4">
+    {% for p in recent_posts %}
+    <div class="col-12" data-snowplow-track="recent-post" data-post-id="{{ p.id }}">
+      <article class="blog-post">
+        <div class="row g-0 shadow-sm">
+          <div class="col-lg-4">
+            <img class="w-100 h-100"
+                 style="object-fit:cover;"
+                 src="{{ media_url }}{{ p.image }}"
+                 alt="{{ p.postname }}"
+                 data-snowplow-track="recent-post-image">
+          </div>
+          <div class="col-lg-8 p-4">
+            <span class="badge bg-secondary"
+                  data-snowplow-track="recent-post-category"
+                  data-category="{{ p.category }}">
+              {{ p.category }}
+            </span>
+            <form class="d-inline"
+                  method="post"
+                  action="{% url 'increaselikes' p.id %}"
+                  data-snowplow-track="recent-like-form">
+              {% csrf_token %}
+              <button class="btn btn-sm btn-outline-danger like-btn"
+                      data-post-id="{{ p.id }}"
+                      data-post-title="{{ p.postname }}"
+                      data-snowplow-track="recent-like-button">
+                {{ p.likes }} <i class="fa fa-heart"></i>
+              </button>
+            </form>
+            <h4 class="mt-2">
+              <a class="text-decoration-none text-dark post-link"
+                 data-post-id="{{ p.id }}"
+                 data-post-title="{{ p.postname }}"
+                 href="{% url 'post' p.id %}"
+                 data-snowplow-track="recent-post-title-link">
+                {{ p.postname }}
+              </a>
+            </h4>
+            <ul class="list-inline small text-muted">
+              <li class="list-inline-item" data-snowplow-track="post-author">{{ p.user }}</li>
+              <li class="list-inline-item">•</li>
+              <li class="list-inline-item" data-snowplow-track="post-timestamp">{{ p.time }}</li>
+            </ul>
+            <p data-snowplow-track="post-content-preview">
+              {{ p.content|slice:":500" }}…
+            </p>
+          </div>
+        </div>
+      </article>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  // Track all interactive elements
+  const trackEvent = (element, eventType, customData = {}) => {
+    if (!window.snowplow) return;
+
+    const defaultData = {
+      element: element.tagName,
+      elementClass: element.className,
+      elementId: element.id || null,
+      pageUrl: window.location.href,
+      pageTitle: document.title,
+      timestamp: new Date().toISOString()
+    };
+
+    const eventData = {...defaultData, ...customData};
+
+    window.snowplow('trackSelfDescribingEvent', {
+      schema: 'iglu:com.blogapp/ui_interaction/jsonschema/1-0-0',
+      data: eventData
+    });
+  };
+
+  // Track carousel interactions
+  document.querySelectorAll('[data-snowplow-track="carousel-control"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      trackEvent(btn, 'carousel-navigation', {
+        direction: btn.getAttribute('data-direction'),
+        carouselId: btn.closest('.carousel').id
+      });
+    });
+  });
+
+  document.querySelectorAll('[data-snowplow-track="carousel-indicator"]').forEach(indicator => {
+    indicator.addEventListener('click', () => {
+      trackEvent(indicator, 'carousel-indicator-click', {
+        slideIndex: indicator.getAttribute('data-slide-index'),
+        carouselId: indicator.closest('.carousel').id
+      });
+    });
+  });
+
+  // Track post interactions
+  document.querySelectorAll('.post-link').forEach(link => {
+    link.addEventListener('click', (e) => {
+      trackEvent(link, 'post-link-click', {
+        postId: link.getAttribute('data-post-id'),
+        postTitle: link.getAttribute('data-post-title'),
+        isRecentPost: link.closest('[data-snowplow-track="recent-post"]') !== null
+      });
+    });
+  });
+
+  document.querySelectorAll('.like-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      trackEvent(btn, 'post-like-click', {
+        postId: btn.getAttribute('data-post-id'),
+        postTitle: btn.getAttribute('data-post-title'),
+        isRecentPost: btn.closest('[data-snowplow-track="recent-post"]') !== null
+      });
+    });
+  });
+
+  // Track section views
+  const trackSectionView = (section) => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          trackEvent(section, 'section-view', {
+            sectionName: section.getAttribute('data-snowplow-track'),
+            sectionId: section.id || null
+          });
+          observer.unobserve(section);
+        }
+      });
+    }, {threshold: 0.5});
+
+    observer.observe(section);
+  };
+
+  document.querySelectorAll('[data-snowplow-track$="section"]').forEach(section => {
+    trackSectionView(section);
+  });
+
+  // Track content engagement (time spent)
+  let engageStartTime = Date.now();
+  const contentElements = document.querySelectorAll([
+    '[data-snowplow-track="post-card"]',
+    '[data-snowplow-track="recent-post"]'
+  ].join(','));
+
+  contentElements.forEach(el => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const postId = entry.target.getAttribute('data-post-id');
+          const startTime = Date.now();
+
+          const trackEngagement = () => {
+            const timeSpent = Math.round((Date.now() - startTime) / 1000);
+            if (timeSpent > 2) { // Only track if viewed for more than 2 seconds
+              trackEvent(entry.target, 'content-engagement', {
+                postId: postId,
+                timeSpentSeconds: timeSpent
+              });
+            }
+          };
+
+          window.addEventListener('beforeunload', trackEngagement);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {threshold: 0.5});
+
+    observer.observe(el);
+  });
+});
+</script>
+{% endblock %}
