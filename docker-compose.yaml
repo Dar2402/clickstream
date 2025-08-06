@@ -282,6 +282,10 @@ services:
       - "80:80"
     volumes:
       - ./Python-Django-Blog-Website/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./E-commerce-Project-1/shop/static:/static/ecommerce:ro
+      - ./Python-Django-Blog-Website/staticfiles:/static/blog:ro
+      - ./django-ecommerce-bookstore-master/staticfiles:/static/book:ro
+      - ./simple-search/static:/static/search:ro
     depends_on:
       - ecommerce
       - search

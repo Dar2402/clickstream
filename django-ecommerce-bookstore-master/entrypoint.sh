@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Wait for the micro collector to be available.
-/usr/local/bin/wait-for-it.sh micro:9090 -- echo "Snowplow Micro is up"
+#/usr/local/bin/wait-for-it.sh micro:9090 -- echo "Snowplow Micro is up"
 
 # Apply database migrations.
 echo "Applying database migrations..."

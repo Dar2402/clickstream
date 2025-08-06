@@ -27,7 +27,9 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
 
     <!-- Load Snowplow sp.js from static -->
-    <script src="{% static 'sp.js' %}"></script>
+{% comment %}
+	<script src="{% static 'js/sp.js' %}"></script>#}
+{% endcomment %}
   </head>
 
   <body>
@@ -62,10 +64,10 @@
           n.src = w;
           g.parentNode.insertBefore(n, g);
         }
-      })(window, document, "script", "/static/sp.js", "snowplow");
+      })(window, document, "script", "{% static 'js/sp.js' %}", "snowplow");
 
-      window.snowplow("newTracker", "sp", ``, {
-        appId: "django-web-app",
+      window.snowplow("newTracker", "sp", `http://localhost:8080`, {
+        appId: "clickstream",
         platform: "web",
         cookieDomain: null,
       });

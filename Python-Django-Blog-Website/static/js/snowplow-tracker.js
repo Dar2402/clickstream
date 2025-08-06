@@ -1,7 +1,7 @@
 class BlogSnowplowTracker {
     constructor() {
     this.trackerName = 'blogTracker';
-    this.appId = 'django-blog-app';
+    this.appId = 'clickstream';
 
     const hostname = window.location.hostname;
     console.log('window.location.hostname', hostname);
@@ -16,9 +16,7 @@ class BlogSnowplowTracker {
         /^172\.(1[6-9]|2\d|3[0-1])\.\d{1,3}\.\d{1,3}$/.test(hostname)
     );
 
-    this.collectorUrl = isLocalhost
-        ? 'http://localhost:8080'
-        : `https://${window.location.hostname}`;
+    this.collectorUrl = 'http://localhost:8080';
 
     this.userId = document.body.dataset.trackUserId || 'anonymous';
 

@@ -23,8 +23,8 @@
       }
     })(window, document, "script", "static/sp.js", "snowplow");
 
-    window.snowplow("newTracker", "sp", "http://localhost:9090", {
-      appId: "flask-web-app",
+    window.snowplow("newTracker", "sp", `http://localhost:8080`, {
+      appId: "clickstream",
       platform: "web",
       cookieDomain: null,
     });
